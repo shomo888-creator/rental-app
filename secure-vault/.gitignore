@@ -1,0 +1,7 @@
+node_modules/
+.env
+*.xcodeproj/
+ios/SecureVault/Info.plist
+ios/SecureVault/SecureVault.entitlements
+.DS_Store
+xcuserdata/

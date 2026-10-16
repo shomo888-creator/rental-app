@@ -1,0 +1,43 @@
+# 用 XcodeGen 產生 Xcode 專案：
+#   brew install xcodegen
+#   cd ios && xcodegen
+#   open SecureVault.xcodeproj
+name: SecureVault
+options:
+  bundleIdPrefix: com.example # ← 改成你自己的（例如 com.yourname）
+  deploymentTarget:
+    iOS: "17.0"
+packages:
+  Sodium:
+    url: https://github.com/jedisct1/swift-sodium
+    exactVersion: 0.9.1
+targets:
+  SecureVault:
+    type: application
+    platform: iOS
+    sources: [SecureVault]
+    dependencies:
+      - package: Sodium
+    settings:
+      base:
+        SWIFT_VERSION: "5.0"
+        TARGETED_DEVICE_FAMILY: "1"
+        CODE_SIGN_ENTITLEMENTS: SecureVault/SecureVault.entitlements
+        # ← 改成你在 Zeabur 上的後端網址（必須是 https）
+        API_BASE_URL: https://your-app.zeabur.app
+    info:
+      path: SecureVault/Info.plist
+      properties:
+        CFBundleDisplayName: SecureVault
+        API_BASE_URL: $(API_BASE_URL)
+        NSFaceIDUsageDescription: 使用 Face ID 解鎖你的保管庫
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        # 只允許 HTTPS，禁止任何明文連線
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: false
+    entitlements:
+      path: SecureVault/SecureVault.entitlements
+      properties:
+        # 所有 App 檔案預設使用最高等級的 iOS 資料保護（手機上鎖時無法讀取）
+        com.apple.developer.default-data-protection: NSFileProtectionComplete
